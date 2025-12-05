@@ -1,0 +1,5 @@
+db_name     = "desafio_db"
+db_user     = "postgres"
+db_password = "secure_password_here"
+backend_port = 3000
+proxy_port   = 8080

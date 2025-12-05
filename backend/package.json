@@ -6,7 +6,17 @@
   "type": "module",
   "author": "Cubos DevOps",
   "license": "ISC",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linter specified\""
+  },
   "dependencies": {
     "pg": "^8.11.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
