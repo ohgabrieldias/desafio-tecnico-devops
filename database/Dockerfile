@@ -2,7 +2,7 @@ FROM postgres:15.8-alpine
 
 ENV POSTGRES_DB=desafio_db
 ENV POSTGRES_USER=postgres
-ARG POSTGRES_PASSWORD=password
+ENV POSTGRES_PASSWORD=password
 
 EXPOSE 5432
 

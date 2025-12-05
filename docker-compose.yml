@@ -2,12 +2,11 @@ services:
   database:
     build:
       context: ./database
-      args:
-        POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     container_name: dsf-database
     environment:
       POSTGRES_DB: ${DB_NAME:-desafio_db}
       POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -39,8 +38,8 @@ services:
     networks:
       - internal_network
     restart: unless-stopped
-    healthcheck:  # ✅ CORRETO: dentro do serviço backend
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health/db"]
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
