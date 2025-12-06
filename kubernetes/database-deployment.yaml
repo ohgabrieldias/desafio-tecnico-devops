@@ -27,7 +27,7 @@ spec:
       containers:
       - name: postgres
         image: database:latest
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 999
           runAsGroup: 999
