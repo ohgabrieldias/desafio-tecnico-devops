@@ -1,3 +1,4 @@
+# Variáveis para a aplicação (se necessário, podem ser usadas para ConfigMaps/Secrets)
 variable "db_name" {
   description = "Nome do banco de dados PostgreSQL"
   type        = string
@@ -15,16 +16,4 @@ variable "db_password" {
   type        = string
   sensitive   = true
   default     = "password"
-}
-
-variable "backend_port" {
-  description = "Porta do backend"
-  type        = number
-  default     = 3000
-}
-
-variable "proxy_port" {
-  description = "Porta do proxy (externa)"
-  type        = number
-  default     = 8080
 }

@@ -456,3 +456,5 @@ A persistência dos dados é um aspecto crítico para garantir que as informaç�
       - ./sql/script.sql:/docker-entrypoint-initdb.d/init.sql
     ```
 - **Importância:** Garante que o banco de dados esteja pronto para uso com a estrutura e dados mínimos necessários para a aplicação funcionar.
+
+---

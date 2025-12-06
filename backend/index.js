@@ -17,7 +17,7 @@ const dbConfig = {
 let client = null;
 let dbConnected = false;
 
-async function connectWithRetry(retries = 5, delay = 3000) {
+async function connectWithRetry(retries = 5, delay = 5000) {
   for (let i = 1; i <= retries; i++) {
     const currentClient = new Client(dbConfig);
     

@@ -1,34 +1,32 @@
+output "nginx_proxy_url" {
+  description = "URL para acessar o Nginx Proxy (Minikube)"
+  value       = "http://${local.minikube_ip}:30080" # Porta NodePort do serviço proxy
+}
+
 output "application_url" {
-  description = "URL da aplicação"
-  value       = "http://localhost:8080"
+  description = "URL da aplicação (Frontend via Nginx Proxy)"
+  value       = "http://${local.minikube_ip}:30080" # Porta NodePort do serviço proxy
 }
 
 output "api_url" {
-  description = "URL da API"
-  value       = "http://localhost:8080/api"
-}
-
-output "backend_health_url" {
-  description = "URL do healthcheck do backend"
-  value       = "http://localhost:3000/health"
+  description = "URL da API do Backend (via Nginx Proxy)"
+  value       = "http://${local.minikube_ip}:30080/api" # Porta NodePort do serviço proxy
 }
 
 output "deployment_summary" {
-  description = "Resumo da implantação"
+  description = "Resumo da implantação no Minikube"
   value = <<-EOT
-  🎉 Implantação concluída!
+  🎉 Implantação concluída no Minikube!
+
+  🌐 Acesso à Aplicação:
+  • Frontend: http://${local.minikube_ip}:30080
+  • API:      http://${local.minikube_ip}:30080/api
+
+  🔧 Para configurar o kubectl localmente (se ainda não o fez):
+  minikube start
+  minikube addons enable ingress
+  eval $(minikube docker-env)
   
-  📊 Serviços:
-  • Database: ${docker_container.database.name}
-  • Backend:  ${docker_container.backend.name} (porta: 3000)
-  • Frontend: ${docker_container.frontend.name}
-  • Proxy:    ${docker_container.proxy.name} (porta: 8080)
-  
-  🌐 Acesso:
-  • Frontend: http://localhost:8080
-  • API:      http://localhost:8080/api
-  
-  🔧 Teste:
-  curl http://localhost:8080/api
   EOT
+  sensitive = true
 }

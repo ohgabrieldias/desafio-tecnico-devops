@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy-service
+  namespace: desafio-devops
+spec:
+  selector:
+    app: nginx-proxy
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080 # Porta NodePort para acesso externo
+  type: NodePort # Alterado para NodePort para expor a porta 30080
