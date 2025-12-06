@@ -14,41 +14,60 @@ spec:
         app: postgres
     spec:
       securityContext:
-        fsGroup: 999 # Garante que o volume seja de propriedade do grupo 999 (usuário postgres)
+        fsGroup: 999
       initContainers:
-        - name: fix-permissions
-          image: busybox:stable-glibc # Uma imagem pequena com ferramentas básicas
-          command: ["sh", "-c", "mkdir -p /var/lib/postgresql/data && chown -R 999:999 /var/lib/postgresql && chmod -R 700 /var/lib/postgresql"]
-          volumeMounts:
-            - name: postgres-storage
-              mountPath: /var/lib/postgresql
-      containers:
-        - name: postgres
-          image: postgres:latest
-          imagePullPolicy: IfNotPresent # Garante que o Kubernetes use a imagem local do Minikube
-          ports:
-            - containerPort: 5432
-          envFrom:
-            - secretRef:
-                name: postgres-secret
-          volumeMounts:
-            - name: postgres-storage
-              mountPath: /var/lib/postgresql # Monta o volume na raiz esperada pelo PostgreSQL
-          livenessProbe:
-            exec:
-              command: ["sh", "-c", "pg_isready -U $(POSTGRES_USER) -d $(POSTGRES_DB)"]
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 6
-          readinessProbe:
-            exec:
-              command: ["sh", "-c", "pg_isready -U $(POSTGRES_USER) -d $(POSTGRES_DB)"]
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 3
-            failureThreshold: 3
-      volumes:
+      - name: fix-permissions
+        image: alpine:3
+        command: ["sh", "-c", "mkdir -p /opt/postgres/data && chown -R 999:999 /opt/postgres"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
         - name: postgres-storage
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+          mountPath: /opt/postgres/data
+      containers:
+      - name: postgres
+        image: database:latest
+        imagePullPolicy: Never
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
+        env:
+        - name: PGDATA
+          value: /opt/postgres/data  # ← PostgreSQL usará este diretório
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /opt/postgres/data  # ← Diretório personalizado
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U postgres
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 60
+          periodSeconds: 10
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc

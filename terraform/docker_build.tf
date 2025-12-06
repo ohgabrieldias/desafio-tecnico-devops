@@ -37,7 +37,7 @@ resource "docker_image" "proxy_image" {
 
 # Recurso para construir a imagem do Banco de Dados
 resource "docker_image" "database_image" {
-  name = "postgres:latest" # Usar um nome de imagem consistente
+  name = "database:latest" # Usar um nome de imagem consistente
   build {
     context    = "${path.module}/../database"
     dockerfile = "Dockerfile"

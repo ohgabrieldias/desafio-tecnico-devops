@@ -13,6 +13,10 @@ spec:
       labels:
         app: backend
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: alpine:3
+        command: ['sh', '-c', 'until nc -zv postgres-service 5432; do echo "⏳ Aguardando banco..."; sleep 2; done; echo "✅ Banco pronto!"']
       containers:
         - name: backend
           image: backend:latest

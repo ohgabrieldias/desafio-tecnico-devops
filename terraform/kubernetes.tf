@@ -49,7 +49,12 @@ resource "kubernetes_manifest" "backend_deployment" {
   depends_on = [
     kubernetes_manifest.desafio_devops_namespace,
     kubernetes_manifest.backend_configmap,
-    kubernetes_manifest.database_secret, # Backend também precisa do secret do banco de dados
+    kubernetes_manifest.database_secret,
+    kubernetes_manifest.database_service,      # Service deve existir
+    kubernetes_manifest.database_deployment,   # Deployment deve estar rodando
+    kubernetes_manifest.database_pvc,          # PVC deve estar pronto
+    kubernetes_manifest.database_secret,
+    kubernetes_manifest.backend_configmap,
     docker_image.backend_image # Depende da imagem Docker ser construída
   ]
 }

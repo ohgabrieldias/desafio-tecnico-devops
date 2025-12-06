@@ -12,10 +12,7 @@ terraform {
   }
 }
 
-provider "docker" {
-  host = "tcp://192.168.49.2:2376"
-  cert_path = "/home/gabriel.dias/.minikube/certs"
-}
+provider "docker" {}
 
 provider "kubernetes" {
       config_path = "~/.kube/config"
